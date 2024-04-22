@@ -14,7 +14,7 @@ import (
 func main() {
 	setupEnv()
 
-	client := binanceApi.NewClient(os.Getenv("API_KEY"), os.Getenv("SECRET_KEY"))
+	client := binanceApi.NewClient(os.Getenv("API_KEY_BINANCE"), os.Getenv("SECRET_KEY_BINANCE"))
 
 	//initTGBot
 	bot, err := tgbotapi.NewBotAPI(os.Getenv("TOKEN_BOT"))
