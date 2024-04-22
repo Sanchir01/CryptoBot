@@ -1,33 +1,56 @@
 package telegramBot
 
 import (
+	"github.com/Sanchir01/CryptoBot/pkg/binance"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/sirupsen/logrus"
 )
 
 type Bot struct {
-	bot *tgbotapi.BotAPI
+	bot     *tgbotapi.BotAPI
+	binance *binance.Binance
 }
 
-func NewClientBot(bot *tgbotapi.BotAPI) *Bot {
-	return &Bot{bot: bot}
+func NewClientBot(bot *tgbotapi.BotAPI, binance *binance.Binance) *Bot {
+	return &Bot{bot: bot, binance: binance}
 }
 
 func (b *Bot) Start() error {
 	logrus.Printf("Authorized on account %s", b.bot.Self.UserName)
+
+	updates, err := b.initUpdatesChannel()
+
+	if err != nil {
+		logrus.Fatal("Ошибка в получении обновления тг бота")
+	}
+
+	b.handleUpdates(updates)
+
+	return nil
+}
+
+func (b *Bot) handleUpdates(updates tgbotapi.UpdatesChannel) {
+	for update := range updates {
+		if update.Message == nil { // If we got a message
+			continue
+		}
+		if update.Message.IsCommand() {
+			b.handleCommandStart(update.Message)
+			continue
+		}
+
+		b.handleMessage(update.Message)
+	}
+}
+
+func (b *Bot) initUpdatesChannel() (tgbotapi.UpdatesChannel, error) {
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
 
-	updates := b.bot.GetUpdatesChan(u)
+	return b.bot.GetUpdatesChan(u), nil
+}
 
-	for update := range updates {
-		if update.Message != nil { // If we got a message
-			logrus.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
-
-			msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
-
-			b.bot.Send(msg)
-		}
-	}
-	return nil
+func (b *Bot) handleMessage(message *tgbotapi.Message) {
+	msg := tgbotapi.NewMessage(message.Chat.ID, message.Text)
+	b.bot.Send(msg)
 }
