@@ -3,7 +3,6 @@ package main
 import (
 	"os"
 
-	"github.com/Sanchir01/CryptoBot/pkg/binance"
 	telegramBot "github.com/Sanchir01/CryptoBot/pkg/bot"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 
@@ -16,7 +15,6 @@ func main() {
 	setupEnv()
 
 	client := binanceApi.NewClient(os.Getenv("API_KEY"), os.Getenv("SECRET_KEY"))
-	myBinance := binance.NewBinanceClient(client)
 
 	//initTGBot
 	bot, err := tgbotapi.NewBotAPI(os.Getenv("TOKEN_BOT"))
@@ -26,7 +24,7 @@ func main() {
 
 	bot.Debug = true
 
-	myBot := telegramBot.NewClientBot(bot, myBinance)
+	myBot := telegramBot.NewClientBot(bot, client)
 
 	if err := myBot.Start(); err != nil {
 		logrus.Fatal(err)

@@ -1,17 +1,17 @@
 package telegramBot
 
 import (
-	"github.com/Sanchir01/CryptoBot/pkg/binance"
+	"github.com/adshao/go-binance/v2"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/sirupsen/logrus"
 )
 
 type Bot struct {
 	bot     *tgbotapi.BotAPI
-	binance *binance.Binance
+	binance *binance.Client
 }
 
-func NewClientBot(bot *tgbotapi.BotAPI, binance *binance.Binance) *Bot {
+func NewClientBot(bot *tgbotapi.BotAPI, binance *binance.Client) *Bot {
 	return &Bot{bot: bot, binance: binance}
 }
 
