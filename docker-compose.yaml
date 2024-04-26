@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  app:
+    restart: always
+    build: ./
+    command: ./.bin/main
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    environment:
+      - API_KEY_BINANCE=HJtAGsybZbQifQLIrSVHH1vEPFLdRH2DufUtPKgpod3qVHZURpEvc9qk29MBmedY
+      - SECKET_KEY_BINANCE=usKbnmCYtejIDawg1CtGEmxjZO9k2OjEIii9nKOdCOacnEBMEOc5MYnWkDiyGOF4
+      - TOKEN_BOT=7087783787:AAGmB1OViUpZUX4X5WQd0Wn1mmbYK1xyGVE
+
+  db:
+    restart: always
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_HOST=db
+      - SSL_MODE=disable
+    ports:
+      - 5432:5432
+
+volumes:
+  db:

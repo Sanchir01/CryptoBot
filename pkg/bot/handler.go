@@ -39,7 +39,7 @@ func (b *Bot) handleBinanceStart(message *tgbotapi.Message) error {
 		return nil
 	}
 	fmt.Println(res)
-	msg := tgbotapi.NewMessage(message.Chat.ID, "Это команда для бинанса ")
+	msg := tgbotapi.NewMessage(message.Chat.ID, b.messages.Commands.BinanceStart)
 
 	_, err = b.bot.Send(msg)
 
@@ -47,14 +47,13 @@ func (b *Bot) handleBinanceStart(message *tgbotapi.Message) error {
 }
 
 func (b *Bot) handleStartCommand(message *tgbotapi.Message) (err error) {
-
-	msg := tgbotapi.NewMessage(message.Chat.ID, "Привет ты ввел команду старт")
+	msg := tgbotapi.NewMessage(message.Chat.ID, b.messages.Commands.BinanceStart)
 	_, err = b.bot.Send(msg)
 	return err
 }
 
 func (b *Bot) handleUnknownCommand(message *tgbotapi.Message) error {
-	msg := tgbotapi.NewMessage(message.Chat.ID, "я не знаю такой команды")
+	msg := tgbotapi.NewMessage(message.Chat.ID, b.messages.Commands.UnknownCommand)
 	_, err := b.bot.Send(msg)
 	return err
 }

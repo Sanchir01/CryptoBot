@@ -1,18 +1,20 @@
 package telegramBot
 
 import (
+	"github.com/Sanchir01/CryptoBot/pkg/config"
 	"github.com/adshao/go-binance/v2"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/sirupsen/logrus"
 )
 
 type Bot struct {
-	bot     *tgbotapi.BotAPI
-	binance *binance.Client
+	bot      *tgbotapi.BotAPI
+	binance  *binance.Client
+	messages config.Messages
 }
 
-func NewClientBot(bot *tgbotapi.BotAPI, binance *binance.Client) *Bot {
-	return &Bot{bot: bot, binance: binance}
+func NewClientBot(bot *tgbotapi.BotAPI, binance *binance.Client, messages config.Messages) *Bot {
+	return &Bot{bot: bot, binance: binance, messages: messages}
 }
 
 func (b *Bot) Start() error {
