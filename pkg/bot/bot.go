@@ -1,24 +1,30 @@
 package telegramBot
 
 import (
+	myBinancePKG "github.com/Sanchir01/CryptoBot/pkg/binance"
 	"github.com/Sanchir01/CryptoBot/pkg/config"
-	"github.com/adshao/go-binance/v2"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/sirupsen/logrus"
 )
 
 type Bot struct {
-	bot      *tgbotapi.BotAPI
-	binance  *binance.Client
-	messages config.Messages
+	bot     *tgbotapi.BotAPI
+	binance *myBinancePKG.BinanceStruct
+	config  *config.Config
 }
 
-func NewClientBot(bot *tgbotapi.BotAPI, binance *binance.Client, messages config.Messages) *Bot {
-	return &Bot{bot: bot, binance: binance, messages: messages}
+func NewClientBot(bot *tgbotapi.BotAPI, binance *myBinancePKG.BinanceStruct, config *config.Config) *Bot {
+	return &Bot{bot: bot, binance: binance, config: config}
 }
 
 func (b *Bot) Start() error {
 	logrus.Printf("Authorized on account %s", b.bot.Self.UserName)
+	cmdCfg, err := b.handleMenuCommandsInit(b.config)
+
+	if err != nil {
+		logrus.Fatal("Ошибка в инициализации бокового меню комманд", err)
+	}
+	b.bot.Send(cmdCfg)
 
 	updates, err := b.initUpdatesChannel()
 
@@ -40,7 +46,6 @@ func (b *Bot) handleUpdates(updates tgbotapi.UpdatesChannel) {
 			b.handleCommandStart(update.Message)
 			continue
 		}
-
 		b.handleMessage(update.Message)
 	}
 }

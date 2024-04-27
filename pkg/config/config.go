@@ -5,7 +5,7 @@ import (
 )
 
 type Config struct {
-	BotToken         string
+	TokenBot         string
 	ApiKeyBinance    string
 	SecretKeyBinance string
 
@@ -13,21 +13,26 @@ type Config struct {
 }
 
 type Messages struct {
-	Commands Commands
-	Errors   Errors
+	Commands
+	Errors
 }
 
 type Commands struct {
-	Start          string `mapstructure:"start"`
-	BinanceStart   string `mapstructure:"binance_start"`
-	UnknownCommand string `mapstructure:"unknown_command"`
+	StartCommand        CommandsComponents `mapstructure:"start"`
+	BinanceStartCommand CommandsComponents `mapstructure:"binance_start"`
+	UnknownCommand      string             `mapstructure:"unknown_command"`
+}
+
+type CommandsComponents struct {
+	Text        string `mapstructure:"text"`
+	Description string `mapstructure:"description"`
 }
 type Errors struct {
 	BinanceOneValueError string
+	OneCryptoError       string
 }
 
 func InitConfig() (*Config, error) {
-	viper.AutomaticEnv()
 	viper.AddConfigPath("configs")
 	viper.SetConfigName("main")
 
@@ -54,7 +59,7 @@ func InitConfig() (*Config, error) {
 }
 
 func parseEnv(cfg *Config) error {
-	if err := viper.BindEnv("bot_token"); err != nil {
+	if err := viper.BindEnv("token_bot"); err != nil {
 		return err
 	}
 	if err := viper.BindEnv("secret_key_binance"); err != nil {
@@ -63,9 +68,9 @@ func parseEnv(cfg *Config) error {
 	if err := viper.BindEnv("api_key_binance"); err != nil {
 		return err
 	}
-	cfg.ApiKeyBinance = viper.GetString("api_key_binance")
+	cfg.TokenBot = viper.GetString("token_bot")
 	cfg.SecretKeyBinance = viper.GetString("secret_key_binance")
-	cfg.BotToken = viper.GetString("token_bot")
+	cfg.ApiKeyBinance = viper.GetString("api_key_binance")
 
 	return nil
 }
